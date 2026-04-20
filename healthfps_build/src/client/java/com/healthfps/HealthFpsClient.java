@@ -26,12 +26,42 @@ public class HealthFpsClient implements ClientModInitializer {
 
             float currentHealth = player.getHealth();
             float maxHealth = player.getMaxHealth();
-
             int targetFps = calculateFpsCap(currentHealth, maxHealth);
 
-            if (lastFps != targetFps) { 
+            if (lastFps != targetFps) {
                 lastFps = targetFps;
-                Minecraft.getInstance().options.framerateLimit().set(targetFps);
+                try {
+                    var options = Minecraft.getInstance().options;
+                    try {
+                        // Try Mojang mappings name first
+                        options.getClass().getMethod("framerateLimit").invoke(options);
+                        var opt = options.framerateLimit();
+                        opt.set(targetFps);
+                    } catch (NoSuchMethodException e) {
+                        // Try reflection to find any field containing fps/framerate
+                        for (var field : options.getClass().getDeclaredFields()) {
+                            String name = field.getName().toLowerCase();
+                            if (name.contains("fps") || name.contains("framerate") || name.contains("maxfps")) {
+                                field.setAccessible(true);
+                                Object val = field.get(options);
+                                if (val != null) {
+                                    try {
+                                        val.getClass().getMethod("set", Object.class).invoke(val, targetFps);
+                                        HealthFpsMod.LOGGER.info("Set FPS via field: " + field.getName());
+                                        break;
+                                    } catch (Exception ex) {
+                                        val.getClass().getMethod("set", int.class).invoke(val, targetFps);
+                                        HealthFpsMod.LOGGER.info("Set FPS via field (int): " + field.getName());
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    HealthFpsMod.LOGGER.info("Health: " + currentHealth + "/" + maxHealth + " -> FPS cap: " + targetFps);
+                } catch (Exception e) {
+                    HealthFpsMod.LOGGER.error("Failed to set FPS cap: " + e.getMessage());
+                }
             }
         });
     }
@@ -40,9 +70,7 @@ public class HealthFpsClient implements ClientModInitializer {
         health = Math.max(0.0f, Math.min(health, maxHealth));
         float fraction = health / maxHealth;
         float lowFraction = LOW_HEALTH_THRESHOLD / maxHealth;
-
         if (fraction <= lowFraction) return MIN_FPS;
-
         int maxFps = 260;
         float t = (fraction - lowFraction) / (1.0f - lowFraction);
         t = (float) Math.pow(t, 0.6);
