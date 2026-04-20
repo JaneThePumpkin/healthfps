@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "healthfps",
-  "version": "${version}",
+  "version": "1.0.0",
   "name": "Health FPS",
   "description": "The lower your health, the lower your FPS cap. Full health = unlimited. Near death = 5 FPS.",
   "authors": ["you"],
