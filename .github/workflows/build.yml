@@ -16,5 +16,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: healthfps-mod
-path: healthfps_build/build/libs/*.jar
+          path: healthfps_build/build/libs/*.jar
           if-no-files-found: error
