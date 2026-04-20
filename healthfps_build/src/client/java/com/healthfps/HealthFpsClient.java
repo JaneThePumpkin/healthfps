@@ -29,7 +29,7 @@ public class HealthFpsClient implements ClientModInitializer {
 
             int targetFps = calculateFpsCap(currentHealth, maxHealth);
 
-            if (lastFps != targetFps) {
+            if (lastFps != targetFps) { 
                 lastFps = targetFps;
                 Minecraft.getInstance().options.framerateLimit().set(targetFps);
             }
