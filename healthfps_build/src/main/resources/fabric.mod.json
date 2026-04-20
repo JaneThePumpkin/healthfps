@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "healthfps",
+  "version": "${version}",
+  "name": "Health FPS",
+  "description": "The lower your health, the lower your FPS cap. Full health = unlimited. Near death = 5 FPS.",
+  "authors": ["you"],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/modid/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "main": ["com.healthfps.HealthFpsMod"],
+    "client": ["com.healthfps.HealthFpsClient"]
+  },
+  "mixins": [],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "~1.21.1",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
