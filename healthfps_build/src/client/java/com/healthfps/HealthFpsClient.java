@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Player;
 public class HealthFpsClient implements ClientModInitializer {
 
     private static final int UPDATE_INTERVAL_TICKS = 4;
-    public static final int MIN_FPS = 1;
+    public static final int MIN_FPS = 10;
     public static float healthFraction = 1.0f;
 
     private int tickCounter = 0;
