@@ -2,6 +2,7 @@ package com.healthfps;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.minecraft.client.option.SimpleOption;
 import net.minecraft.entity.player.PlayerEntity;
 
 public class HealthFpsClient implements ClientModInitializer {
@@ -11,6 +12,7 @@ public class HealthFpsClient implements ClientModInitializer {
     private static final float LOW_HEALTH_THRESHOLD = 2.0f;
 
     private int tickCounter = 0;
+    private int lastFps = -1;
 
     @Override
     public void onInitializeClient() {
@@ -27,8 +29,10 @@ public class HealthFpsClient implements ClientModInitializer {
 
             int targetFps = calculateFpsCap(currentHealth, maxHealth);
 
-            if (client.options.getMaxFps().getValue() != targetFps) {
-                client.options.getMaxFps().setValue(targetFps);
+            if (lastFps != targetFps) {
+                lastFps = targetFps;
+                SimpleOption<Integer> maxFpsOption = client.options.getMaxFps();
+                maxFpsOption.setValue(targetFps);
             }
         });
     }
